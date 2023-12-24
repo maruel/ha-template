@@ -1,0 +1,15 @@
+/.storage/core.restore_state
+/.storage/hacs.repositories
+/.storage/mobile_app
+/.storage/trace.saved_traces
+/.storage/tmp*
+/.storage/unifi_data
+/.storage/core.device_registry.corrupt.*
+/backups
+/deps
+/home-assistant.log.fault
+/home-assistant_v2.db
+/home-assistant_v2.db-shm
+/home-assistant_v2.db-wal
+/tts
+/www/snapshots

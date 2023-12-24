@@ -1,0 +1,64 @@
+# Copyright 2023 Marc-Antoine Ruel. All rights reserved.
+# Use of this source code is governed under the Apache License, Version 2.0
+# that can be found in the LICENSE file.
+
+# docker-compose.yml: https://docs.docker.com/compose/compose-file/compose-file-v2/
+#
+# Version 3.x is for docker swarm, which is not really usable here because we
+# need:
+#   - homeassistant container to be on the host network, to be able to do mDNS
+#     based discovery.
+#
+# Testing:
+#   docker exec -it <container_name> /bin/bash
+version: "2.4"
+
+services:
+  # https://hub.docker.com/_/eclipse-mosquitto/tags
+  mosquitto:
+    container_name: mosquitto
+    hostname: mosquitto
+    image: eclipse-mosquitto:2.0.18
+    volumes:
+      - ./mosquitto:/mosquitto
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "1883:1883" # MQTT
+      - "1884:1884" # Websocket
+    user: "1000:1000"
+    restart: unless-stopped
+
+  # https://hub.docker.com/r/homeassistant/home-assistant/tags
+  # https://github.com/home-assistant/core/releases
+  # https://www.home-assistant.io/blog/categories/release-notes/
+  # The Dockerfile is at https://github.com/home-assistant/core
+  homeassistant:
+    container_name: homeassistant
+    image: homeassistant/home-assistant:2023.12.3
+    depends_on:
+      - mosquitto
+    # Disable log file, since it's already logging to stderr.
+    command:
+      - python
+      - -m
+      - homeassistant
+      - --config
+      - /config
+      - --log-file
+      - /dev/null
+    volumes:
+      - ./homeassistant:/config
+        # For matplotlib:
+      - ./homeassistant/extra/cache:/.cache
+      - ./homeassistant/extra/config:/.config
+        # For python libraries
+      - ./homeassistant/extra/local:/.local
+      - /etc/localtime:/etc/localtime:ro
+      - /media:/media:ro
+        # DBus for Bluetooth
+      - /run/dbus:/run/dbus:ro
+    # Necessary to enable discovery (like mDNS) on the local network. Exposes
+    # port 8123.
+    network_mode: host
+    user: "1000:1000"
+    restart: always
