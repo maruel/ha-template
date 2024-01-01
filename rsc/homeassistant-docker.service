@@ -4,18 +4,12 @@
 
 [Unit]
 Description=HomeAssistant
-# This fails the installation. Super weird.
-#After=docker.service
-#Requires=docker.service
 
 [Service]
 WorkingDirectory=%h/home
 ExecStartPre=-/usr/bin/docker compose kill
 ExecStop=/usr/bin/docker compose stop
 NotifyAccess=all
-
-# Either use oneshot+remain + "-d" or on-failure:
-#Restart=on-failure
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=/usr/bin/docker compose up -d --remove-orphans
