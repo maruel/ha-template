@@ -16,7 +16,7 @@ exceptiongroup==1.2.0
 frozenlist==1.4.1
 h11==0.14.0
 home-assistant-bluetooth==1.10.0
-homeassistant==2023.7.3
+homeassistant==2023.12.3
 httpcore==0.17.3
 httpx==0.24.1
 idna==3.6
