@@ -21,7 +21,6 @@ sudo apt install -y apg ca-certificates curl git gnupg tmux vim
 ./rsc/setup-tailscale.sh
 ./rsc/setup-docker.sh
 #./rsc/setup-docker-network.sh
-./rsc-setup-systemd.sh
 
 # Only generate a new MQTT password if it didn't exist.
 if [ ! -f ./homeassistant/secrets.yaml ]; then
