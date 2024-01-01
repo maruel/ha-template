@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 # Copyright 2023 Marc-Antoine Ruel. All rights reserved.
 # Use of this source code is governed under the Apache License, Version 2.0
 # that can be found in the LICENSE file.
@@ -16,7 +16,10 @@ sudo apt update
 sudo apt upgrade -y
 
 # Prerequisites
-sudo apt install -y apg git mosquitto mosquitto-clients python3-dev tmux vim
+sudo apt install -y apg build-essential git mosquitto mosquitto-clients tmux vim
+
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt install python3.12 python3.12-dev python3.12-venv
 
 # Tailscale; https://tailscale.com/download/linux
 if [ ! -f /usr/bin/tailscale ]; then
@@ -55,7 +58,7 @@ EOF
   echo "mqtt_pass: $P" >> ./homeassistant/secrets.yaml
 fi
 
-python3 -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate
 pip3 install -U wheel
 pip3 install -r requirements.txt
