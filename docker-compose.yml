@@ -14,7 +14,7 @@
 version: "2.4"
 
 services:
-  # https://hub.docker.com/_/eclipse-mosquitto/tags
+  # https://hub.docker.com/_/eclipse-mosquitto/tags?name=2
   mosquitto:
     container_name: mosquitto
     hostname: mosquitto
@@ -28,13 +28,13 @@ services:
     user: "1000:1000"
     restart: unless-stopped
 
-  # https://hub.docker.com/r/homeassistant/home-assistant/tags
+  # https://hub.docker.com/r/homeassistant/home-assistant/tags?name=2024
   # https://github.com/home-assistant/core/releases
   # https://www.home-assistant.io/blog/categories/release-notes/
   # The Dockerfile is at https://github.com/home-assistant/core
   homeassistant:
     container_name: homeassistant
-    image: homeassistant/home-assistant:2023.12.3
+    image: homeassistant/home-assistant:2023.12.4
     depends_on:
       - mosquitto
     # Disable log file, since it's already logging to stderr.
@@ -62,3 +62,13 @@ services:
     network_mode: host
     user: "1000:1000"
     restart: always
+
+  # https://hub.docker.com/r/esphome/esphome/tags?name=2024
+  esphome:
+    container_name: esphome
+    image: esphome/esphome:2023.12.5
+    restart: unless-stopped
+    volumes:
+      - ./esphome:/config
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: host
