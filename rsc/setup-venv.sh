@@ -16,7 +16,7 @@ sudo apt update
 sudo apt upgrade -y
 
 # Prerequisites
-sudo apt install -y apg build-essential git mosquitto mosquitto-clients tmux vim
+sudo apt install -y apg build-essential cargo git mosquitto mosquitto-clients rustc tmux vim
 
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt install python3.12 python3.12-dev python3.12-venv
