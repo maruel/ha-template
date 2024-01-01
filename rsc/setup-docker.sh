@@ -62,5 +62,6 @@ cp rsc/homeassistant-docker.service ~/.config/systemd/user/homeassistant.service
 systemctl --user daemon-reload
 systemctl --user enable homeassistant
 systemctl --user restart homeassistant
+systemctl --user status homeassistant
 
 echo "Success!"

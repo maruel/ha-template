@@ -50,9 +50,17 @@ message_size_limit 1048576
 allow_anonymous false
 EOF
   sudo systemctl restart mosquitto
+  sudo systemctl status mosquitto
   echo "mqtt_user: $U" >> ./homeassistant/secrets.yaml
   echo "mqtt_pass: $P" >> ./homeassistant/secrets.yaml
 fi
+
+python3 -m venv .venv
+source .venv/bin/activate
+pip3 install -U wheel
+pip3 install -r requirements.txt
+#pip3 install -U homeassistant
+
 
 # Always forcibly reinstall the service.
 mkdir -p ~/.config/systemd/user
@@ -60,5 +68,6 @@ cp rsc/homeassistant-venv.service ~/.config/systemd/user/homeassistant.service
 systemctl --user daemon-reload
 systemctl --user enable homeassistant
 systemctl --user restart homeassistant
+systemctl --user status homeassistant
 
 echo "Success!"
