@@ -11,28 +11,22 @@ set -eu
 cd "$(dirname $0)"
 cd ..
 
+sudo adduser $USER dialout
+sudo adduser $USER video
+
 # Still needed after a fresh install.
 sudo apt update
 sudo apt upgrade -y
 
 # Prerequisites
-sudo apt install -y apg ca-certificates curl git gnupg tmux vim
+sudo apt install -y \
+  apg ca-certificates curl git gnupg tmux vim
+  bluez \
+  dbus-broker
+sudo systemctl enable dbus-broker.service
 
 ./rsc/setup-tailscale.sh
 ./rsc/setup-docker.sh
-#./rsc/setup-docker-network.sh
-
-# Only generate a new MQTT password if it didn't exist.
-if [ ! -f ./homeassistant/secrets.yaml ]; then
-  U=homeassistant
-  P="$(apg -m 32 -n 1)"
-  echo "Creating mosquitto account $U:$P"
-  touch ./mosquitto/config/mosquitto_passwd
-  chmod 0700 ./mosquitto/config/mosquitto_passwd
-  docker compose run --rm -it mosquitto /usr/bin/mosquitto_passwd -b /mosquitto/config/mosquitto_passwd "$U" "$P"
-  echo "mqtt_user: $U" >> ./homeassistant/secrets.yaml
-  echo "mqtt_pass: $P" >> ./homeassistant/secrets.yaml
-fi
-
+./rsc/setup-mosquitto.sh
 ./rsc/setup-systemd.sh homeassistant-docker.service
 echo "Success!"
