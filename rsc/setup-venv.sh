@@ -23,12 +23,7 @@ sudo apt install -y apg build-essential cargo ffmpeg git \
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt install python3.12 python3.12-dev python3.12-venv
 
-# Tailscale; https://tailscale.com/download/linux
-if [ ! -f /usr/bin/tailscale ]; then
-  curl -fsSL https://tailscale.com/install.sh | sh
-  # The user will have to sign in.
-  sudo tailscale up --ssh
-fi
+./rsc/setup-tailscale.sh
 
 # Only generate a new MQTT password if it didn't exist.
 if [ ! -f ./homeassistant/secrets.yaml ]; then
@@ -66,13 +61,5 @@ pip3 install -U wheel
 pip3 install -r rsc/requirements.txt
 #pip3 install -U homeassistant
 
-
-# Always forcibly reinstall the service.
-mkdir -p ~/.config/systemd/user
-cp rsc/homeassistant-venv.service ~/.config/systemd/user/homeassistant.service
-systemctl --user daemon-reload
-systemctl --user enable homeassistant
-systemctl --user restart homeassistant
-systemctl --user status homeassistant
-
+./rsc/setup-systemd.sh homeassistant-venv.service
 echo "Success!"
