@@ -10,4 +10,4 @@ sudo apt install -y git
 
 git clone --recurse https://github.com/maruel/ha-template home
 cd home
-./rsc/setup-venv.sh
+./rsc/setup-docker.sh

@@ -63,7 +63,7 @@ fi
 python3.12 -m venv .venv
 source .venv/bin/activate
 pip3 install -U wheel
-pip3 install -r requirements.txt
+pip3 install -r rsc/requirements.txt
 #pip3 install -U homeassistant
 
 
