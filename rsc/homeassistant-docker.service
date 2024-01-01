@@ -18,7 +18,7 @@ NotifyAccess=all
 #Restart=on-failure
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/bin/docker compose up -d
+ExecStart=/usr/bin/docker compose up -d --remove-orphans
 
 [Install]
 WantedBy=default.target

@@ -26,7 +26,7 @@ services:
       - "1883:1883" # MQTT
       - "1884:1884" # Websocket
     user: "1000:1000"
-    restart: unless-stopped
+    restart: always
 
   # https://hub.docker.com/r/homeassistant/home-assistant/tags?name=2024
   # https://github.com/home-assistant/core/releases
@@ -36,6 +36,7 @@ services:
     container_name: homeassistant
     image: homeassistant/home-assistant:2023.12.4
     depends_on:
+      - avahi
       - mosquitto
     # Disable log file, since it's already logging to stderr.
     command:
@@ -56,13 +57,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ./media:/media:ro
         # DBus for Bluetooth and avahi (mDNS)
-      - /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket
       - /var/run/dbus:/var/run/dbus
     ports:
       - "8123:8123"
-    # Necessary to enable discovery (like mDNS) on the local network. Exposes
-    # port 8123.
     #network_mode: host
+    network_mode: avahi_mdns
     user: "1000:1000"
     restart: always
 
@@ -70,12 +69,44 @@ services:
   esphome:
     container_name: esphome
     image: esphome/esphome:2023.12.5
-    restart: unless-stopped
+    depends_on:
+      - avahi
     volumes:
       - ./esphome:/config
       - /etc/localtime:/etc/localtime:ro
-      - /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket
-      - /var/run/dbus:/var/run/dbus
-    #ports:
-    #  - "6052:6052"
-    network_mode: host
+    ports:
+      - "6052:6052"
+    network_mode: avahi_mdns
+    restart: always
+
+  # https://hub.docker.com/r/epandi/avahi
+  avahi:
+    container_name: avahi
+    image: flungo/avahi:latest
+    environment:
+      - REFLECTOR_ENABLE_REFLECTOR=yes
+    networks:
+      outside:
+        # TODO(maruel): How to not hardcode?
+        ipv4_address: 192.168.3.9
+      inside:
+    restart: always
+
+
+networks:
+  inside:
+    name: avahi_mdns
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.6.0/24
+          gateway: 192.168.6.1
+  outside:
+    name: physical
+    driver: macvlan
+    driver_opts:
+      parent: enp89s0
+    ipam:
+      config:
+        - subnet: 192.168.3.0/22
+          gateway: 192.168.3.1
