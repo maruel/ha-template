@@ -54,7 +54,7 @@ services:
         # For python libraries
       - ./homeassistant/extra/local:/.local
       - /etc/localtime:/etc/localtime:ro
-      - /media:/media:ro
+      - ./media:/media:ro
         # DBus for Bluetooth
       - /run/dbus:/run/dbus:ro
     # Necessary to enable discovery (like mDNS) on the local network. Exposes
