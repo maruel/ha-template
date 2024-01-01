@@ -5,9 +5,9 @@
 
 set -eu
 
-# Prerequisite to git clone
-sudo apt install -y git
+# This file is located under rsc/.
+cd "$(dirname $0)"
+cd ..
 
-git clone --recurse https://github.com/maruel/ha-template home
-cd home
-./rsc/setup-venv.sh
+source .venv/bin/activate
+homeassistant

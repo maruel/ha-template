@@ -3,6 +3,8 @@
 # Use of this source code is governed under the Apache License, Version 2.0
 # that can be found in the LICENSE file.
 
+# Configuring Home Assistant as a docker instance.
+
 set -eu
 
 # This file is located under rsc/.
@@ -20,7 +22,7 @@ sudo apt install -y apg ca-certificates curl git gnupg tmux vim
 if [ ! -f /usr/bin/tailscale ]; then
   curl -fsSL https://tailscale.com/install.sh | sh
   # The user will have to sign in.
-  sudo tailscale up
+  sudo tailscale up --ssh
 fi
 
 # Docker; https://docs.docker.com/engine/install/ubuntu/
@@ -49,14 +51,14 @@ if [ ! -f ./homeassistant/secrets.yaml ]; then
   echo "Creating mosquitto account $U:$P"
   touch ./mosquitto/config/mosquitto_passwd
   chmod 0700 ./mosquitto/config/mosquitto_passwd
-  docker compose run --rm -it mosquitto /usr/bin/mosquitto_passwd -b /mosquitto/config/mosquitto_passwd $U $P
+  docker compose run --rm -it mosquitto /usr/bin/mosquitto_passwd -b /mosquitto/config/mosquitto_passwd "$U" "$P"
   echo "mqtt_user: $U" >> ./homeassistant/secrets.yaml
   echo "mqtt_pass: $P" >> ./homeassistant/secrets.yaml
 fi
 
 # Always forcibly reinstall the service.
 mkdir -p ~/.config/systemd/user
-cp rsc/*.service ~/.config/systemd/user
+cp rsc/homeassistant-docker.service ~/.config/systemd/user/homeassistant.service
 systemctl --user daemon-reload
 systemctl --user enable homeassistant
 systemctl --user restart homeassistant
