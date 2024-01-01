@@ -17,7 +17,7 @@ if [ $# -ne 0 ]; then
 fi
 # Always forcibly reinstall the service.
 mkdir -p ~/.config/systemd/user
-cp "rsc/${SERVICE}" "~/.config/systemd/user/homeassistant.service"
+cp "rsc/${SERVICE}" "${HOME}/.config/systemd/user/homeassistant.service"
 systemctl --user daemon-reload
 systemctl --user enable homeassistant
 systemctl --user restart homeassistant
