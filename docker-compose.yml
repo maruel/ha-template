@@ -59,8 +59,8 @@ services:
         # DBus for Bluetooth and avahi (mDNS)
       - /var/run/dbus:/var/run/dbus
     ports:
-      - "8123:8123"
-    #network_mode: host
+      - "1900:1900" # SSDP/uPNP
+      - "8123:8123" # Web UI
     network_mode: avahi_mdns
     user: "1000:1000"
     restart: always
