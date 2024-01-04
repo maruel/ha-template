@@ -28,13 +28,12 @@ services:
     user: "1000:1000"
     restart: always
 
-  # https://hub.docker.com/r/homeassistant/home-assistant/tags?name=2024
   # https://github.com/home-assistant/core/releases
   # https://www.home-assistant.io/blog/categories/release-notes/
   # The Dockerfile is at https://github.com/home-assistant/core
   homeassistant:
     container_name: homeassistant
-    image: homeassistant/home-assistant:2023.12.4
+    image: ghcr.io/home-assistant/home-assistant:2023.12.4
     depends_on:
       - avahi
       - mosquitto
