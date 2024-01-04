@@ -57,6 +57,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ./media:/media:ro
         # DBus for Bluetooth and avahi (mDNS)
+      - /run/dbus:/run/dbus
       - /var/run/dbus:/var/run/dbus
     ports:
       - "1900:1900" # SSDP/uPNP
