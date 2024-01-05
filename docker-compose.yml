@@ -59,7 +59,7 @@ services:
       - /run/dbus:/run/dbus
       - /var/run/dbus:/var/run/dbus
     ports:
-      - "1900:1900" # SSDP/uPNP
+      - "1900:1900/udp" # SSDP/uPNP
       - "8123:8123" # Web UI
     network_mode: avahi_mdns
     user: "1000:1000"
